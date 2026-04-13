@@ -12,8 +12,8 @@ export default defineConfig({
       ".ngrok-free.app"   // perbolehkan semua subdomain ngrok
     ],
     proxy: {
-      "/api": { target: "http://localhost:5000", changeOrigin: true },
-      "/uploads": { target: "http://localhost:5000", changeOrigin: true },
+      "/api": { target: "https://aim-teknik-production.up.railway.app", changeOrigin: true },
+      "/uploads": { target: "https://aim-teknik-production.up.railway.app", changeOrigin: true },
     },
   },
   preview: {
