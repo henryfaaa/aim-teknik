@@ -22,15 +22,23 @@ import ownerRoutes from "./routes/ownerRoutes.js";
 const app = express();
 
 // ----- Middlewares -----
-const FRONTEND = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-app.use(
-  cors({
-    origin: FRONTEND,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://aim-teknik.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 
 // logger sederhana
 app.use((req, _res, next) => {
