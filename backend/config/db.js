@@ -1,33 +1,33 @@
-// backend/config/db.js
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || "127.0.0.1",
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "aimteknik",
+let pool;
 
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+if (process.env.DATABASE_URL) {
+  // Railway production
+  pool = mysql.createPool(process.env.DATABASE_URL);
+} else {
+  // Local development
+  pool = mysql.createPool({
+    host: process.env.DB_HOST || "127.0.0.1",
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_NAME || "aimteknik",
 
-  // koneksi jangan ngegantung selamanya
-  connectTimeout: 10_000,
-
-  // bikin koneksi lebih tahan putus
-  enableKeepAlive: true,
-  keepAliveInitialDelay: 0,
-
-  // tanggal sebagai string
-  dateStrings: true,
-});
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    connectTimeout: 10000,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0,
+    dateStrings: true,
+  });
+}
 
 export default pool;
 
-// quick self-test
 export async function assertDB() {
   try {
     const conn = await pool.getConnection();
