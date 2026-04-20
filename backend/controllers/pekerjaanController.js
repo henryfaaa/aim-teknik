@@ -156,6 +156,7 @@ export const create = async (req, res) => {
   const conn = await pool.getConnection();
   try {
     const { tanggal, no_co, kode_toko, nama_toko, items } = req.body;
+    const co = String(no_co || "").trim();
 
     const parsedItems = JSON.parse(items || "[]").map((x, i) => ({
       deskripsi: String(x.deskripsi || "").trim(),
@@ -196,7 +197,7 @@ Silakan Ganti Nomor Complain.`,
       `INSERT INTO pekerjaan
         (tanggal, no_co, kode_toko, nama_toko, total_harga, status, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, 'siap_kirim', NOW(), NOW())`,
-      [tanggal, no_co || null, kode_toko, nama_toko || null, total_harga]
+      [tanggal, co || null, kode_toko, nama_toko || null, total_harga]
     );
     const pekerjaanId = r.insertId;
 
@@ -261,20 +262,21 @@ export const update = async (req, res) => {
     const { tanggal, no_co, kode_toko, nama_toko, status, items } = req.body;
     const parsedItems = items ? JSON.parse(items) : null;
 // === VALIDASI CO SAAT UPDATE (ANTI TABRAK) ===
-if (no_co) {
+
+if (co) {
   const [[exist]] = await conn.query(
-    `SELECT id
+    `SELECT id, kode_toko, nama_toko
      FROM pekerjaan
-     WHERE no_co = ? AND id <> ?
+     WHERE TRIM(no_co) = ?
      LIMIT 1`,
-    [no_co, id]
+    [co]
   );
 
   if (exist) {
     return res.status(400).json({
       ok: false,
       code: "DUPLICATE_CO",
-      message: `Nomor complain ${no_co} sudah digunakan pada pekerjaan lain.`,
+      message: `Nomor complain ${co} sudah terdaftar pada toko ${exist.nama_toko || exist.kode_toko}.`,
     });
   }
 }
