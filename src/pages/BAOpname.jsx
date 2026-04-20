@@ -1,6 +1,6 @@
 // src/pages/BAOpname.jsx
 import { useEffect, useMemo, useState } from "react";
-
+import { API_BASE } from "../utils/api";
 const toIDR = (n) =>
   Number(n || 0).toLocaleString("id-ID", { maximumFractionDigits: 0 });
 const fmtDate = (s) => {
@@ -106,7 +106,7 @@ export default function BAOpname() {
       params.set("page", String(page));
       params.set("limit", String(pageSize));
 
-      const r = await fetch(`/api/ba?${params.toString()}`);
+      fetch(`${API_BASE}/ba?${params.toString()}`)
       const j = await r.json();
       if (!j.ok) throw new Error(j.error || "Gagal memuat");
 

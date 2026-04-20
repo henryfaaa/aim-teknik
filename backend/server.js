@@ -23,7 +23,6 @@ const app = express();
 
 // ----- Middlewares -----
 const allowedOrigins = [
-  "http://localhost:5173",
   "https://aim-teknik.vercel.app"
 ];
 

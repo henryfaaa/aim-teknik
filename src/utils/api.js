@@ -1,0 +1,1 @@
+export const API_BASE = "https://aim-teknik-production.up.railway.app/api";
