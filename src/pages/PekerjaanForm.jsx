@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react";
-import axios from "axios";
-
+import api from "@/utils/api";
 /* helpers */
 const toIDR = (n) =>
   (Number(n || 0)).toLocaleString("id-ID", { maximumFractionDigits: 0 });
@@ -84,7 +83,7 @@ export default function InputPekerjaan() {
       form.beforeFiles.forEach((f) => fd.append("beforeFiles[]", f));
       form.afterFiles.forEach((f) => fd.append("afterFiles[]", f));
 
-      await axios.post("/api/pekerjaan", fd, {
+      await api.post("/api/pekerjaan", fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
