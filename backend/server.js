@@ -23,7 +23,8 @@ const app = express();
 
 // ----- Middlewares -----
 const allowedOrigins = [
-  "https://aim-teknik.vercel.app"
+  "https://aim-teknik.vercel.app",
+  "https://aim-teknik-git-main.vercel.app"
 ];
 
 app.use(cors({

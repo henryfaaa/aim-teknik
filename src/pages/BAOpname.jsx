@@ -106,7 +106,7 @@ export default function BAOpname() {
       params.set("page", String(page));
       params.set("limit", String(pageSize));
 
-      fetch(`${API_BASE}/ba?${params.toString()}`)
+      const r = await fetch(`${API_BASE}/api/ba?${params.toString()}`);
       const j = await r.json();
       if (!j.ok) throw new Error(j.error || "Gagal memuat");
 
@@ -176,7 +176,7 @@ export default function BAOpname() {
         total: 0,
         mode: null,
       }));
-      const r = await fetch("/api/invoice/preview", {
+      const r = await fetch(`${API_BASE}/api/invoice/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ba_list: Array.from(selected) }),
@@ -203,7 +203,7 @@ export default function BAOpname() {
 
   const doExport = async () => {
     try {
-      const r = await fetch("/api/invoice/export", {
+      const r = await fetch(`${API_BASE}/api/invoice/export`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
