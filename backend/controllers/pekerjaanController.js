@@ -284,7 +284,6 @@ if (co) {
     });
   }
 }
-}
 
     // kalau ada items, hitung total baru. Kalau tidak, pertahankan yang lama
     let total_harga = null;
