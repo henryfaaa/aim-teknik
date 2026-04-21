@@ -173,12 +173,13 @@ export const create = async (req, res) => {
 // === VALIDASI CO TIDAK BOLEH DOUBLE ===
 if (co) {
   const [[exist]] = await conn.query(
-    `SELECT id, kode_toko, nama_toko
-     FROM pekerjaan
-     WHERE TRIM(no_co) = ?
-     LIMIT 1`,
-    [co]
-  );
+  `SELECT id, kode_toko, nama_toko
+   FROM pekerjaan
+   WHERE TRIM(no_co) = ?
+   AND id != ?
+   LIMIT 1`,
+  [co, id]
+);
 
   if (exist) {
     return res.status(400).json({
@@ -259,16 +260,20 @@ export const update = async (req, res) => {
   const conn = await pool.getConnection();
   try {
     const { tanggal, no_co, kode_toko, nama_toko, status, items } = req.body;
-    const parsedItems = items ? JSON.parse(items) : null;
-// === VALIDASI CO SAAT UPDATE (ANTI TABRAK) ===
 
+const co = String(no_co || "").trim();
+
+const parsedItems = items ? JSON.parse(items) : null;
+
+// === VALIDASI CO SAAT UPDATE (ANTI TABRAK) ===
 if (co) {
   const [[exist]] = await conn.query(
     `SELECT id, kode_toko, nama_toko
      FROM pekerjaan
      WHERE TRIM(no_co) = ?
+     AND id != ?
      LIMIT 1`,
-    [co]
+    [co, id]
   );
 
   if (exist) {
@@ -278,6 +283,7 @@ if (co) {
       message: `Nomor complain ${co} sudah terdaftar pada toko ${exist.nama_toko || exist.kode_toko}.`,
     });
   }
+}
 }
 
     // kalau ada items, hitung total baru. Kalau tidak, pertahankan yang lama
