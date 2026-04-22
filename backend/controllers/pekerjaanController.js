@@ -172,6 +172,8 @@
       );
   // === VALIDASI CO TIDAK BOLEH DOUBLE ===
   if (co) {
+  console.log("CO MASUK:", co);
+
   const [rows] = await conn.query(
     `SELECT id, kode_toko, nama_toko
      FROM pekerjaan
@@ -180,14 +182,13 @@
     [co]
   );
 
-  if (rows.length > 0) {
-    const exist = rows[0];
+  console.log("HASIL CEK:", rows);
 
+  if (rows.length > 0) {
     return res.status(400).json({
       ok: false,
       code: "DUPLICATE_CO",
-      message: `Nomor complain ${co} sudah terdaftar pada toko ${exist.nama_toko || exist.kode_toko}. 
-Silakan ganti nomor CO.`,
+      message: `Nomor complain ${co} sudah terdaftar.`,
     });
   }
 }
