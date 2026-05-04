@@ -94,7 +94,7 @@ export default function InputPekerjaan() {
 
   const msg =
     err?.response?.data?.message ||
-    err?.response?.data?.error ||   // 🔥 TAMBAH INI
+    err?.response?.data?.error ||
     "Terjadi error";
 
   alert("⚠️ " + msg);

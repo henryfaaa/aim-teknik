@@ -357,6 +357,7 @@
       res.json({ ok: true, id });
     } catch (e) {
       await conn.rollback();
+      console.error("CREATE ERROR FULL:", e);
       console.error("UPDATE ERROR:", e.sqlMessage || e.message || e);
       res.status(500).json({ ok:false, error: e.sqlMessage || e.message || String(e) });
     } finally {
