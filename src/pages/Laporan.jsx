@@ -394,7 +394,7 @@ const groupByMonth = (data) => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-2xl shadow p-4 grid md:grid-cols-6 gap-3">
+      <div className="bg-white rounded-2xl shadow p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         <div>
           <label className="text-sm text-gray-600">Dari</label>
           <input
@@ -450,33 +450,92 @@ const groupByMonth = (data) => {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-3 py-2 rounded bg-emerald-600 text-white text-sm hover:bg-emerald-700"
-        >
-          Pilih Toko
-        </button>
-        <button
-          onClick={() => doExport("bulan")}
-          className="px-3 py-2 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-700"
-        >
-          Unduh Laporan PDF (Per Bulan)
-        </button>
-        <button
-          onClick={() => doExport("toko")}
-          className="px-3 py-2 rounded bg-blue-600 text-white text-sm hover:bg-blue-700"
-        >
-          Unduh Laporan PDF (Per Toko)
-        </button>
-      </div>
+<div className="flex flex-col sm:flex-row gap-2">
 
+  <button
+    onClick={() => setShowModal(true)}
+    className="w-full sm:w-auto px-3 py-3 rounded bg-emerald-600 text-white text-sm font-semibold"
+  >
+    Pilih Toko
+  </button>
+
+  <button
+    onClick={() => doExport("bulan")}
+    className="w-full sm:w-auto px-3 py-3 rounded bg-indigo-600 text-white text-sm font-semibold"
+  >
+    Export PDF Bulanan
+  </button>
+
+  <button
+    onClick={() => doExport("toko")}
+    className="w-full sm:w-auto px-3 py-3 rounded bg-blue-600 text-white text-sm font-semibold"
+  >
+    Export PDF Detail
+  </button>
+
+</div>
+{/* ================= MOBILE VERSION ================= */}
+<div className="block md:hidden space-y-3">
+
+  {loadingTable ? (
+    <div className="text-gray-500">Memuat data…</div>
+  ) : rows.length === 0 ? (
+    <div className="text-gray-500">Tidak ada data.</div>
+  ) : (
+    rows.map((r) => (
+      <div key={r.id} className="bg-white border rounded-xl p-4 shadow-sm">
+
+        {/* HEADER */}
+        <div className="flex justify-between">
+          <div>
+            <div className="font-semibold text-sm">{r.nama_toko}</div>
+            <div className="text-xs text-gray-500">{r.tanggal}</div>
+          </div>
+          <div className="font-bold text-sm">
+            Rp {toIDR(r.total_harga)}
+          </div>
+        </div>
+
+        {/* INFO */}
+        <div className="mt-2 text-xs text-gray-600 space-y-1">
+          <div>CO: {r.no_co}</div>
+          <div>BA: {r.ba_opname_no || "-"}</div>
+          <div>KDTK: {r.kode_toko}</div>
+        </div>
+
+        {/* STATUS */}
+        <div className="mt-2">
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              r.status_cair === "sudah"
+                ? "bg-emerald-100 text-emerald-700"
+                : r.status_cair === "proses"
+                ? "bg-indigo-100 text-indigo-700"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {labelStatusPembayaran(r.status_cair)}
+          </span>
+        </div>
+
+      </div>
+    ))
+  )}
+
+</div>
       {/* Table */}
-      <div className="bg-white rounded-2xl shadow overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl shadow overflow-hidden">
         <div className="px-4 py-3 border-b text-sm text-gray-600">
           Periode {from} s/d {to} — {meta.total} baris
         </div>
-
+{rows.length > 0 && (
+  <div className="px-4 py-3 bg-emerald-50 text-emerald-700 text-sm border-b rounded-b-xl">
+    💰 Total nilai transaksi: 
+    <span className="font-bold ml-1">
+      Rp {toIDR(rows.reduce((a,b)=>a+Number(b.total_harga||0),0))}
+    </span>
+  </div>
+)}
         {loadingTable ? (
           <div className="p-6 text-gray-500">Memuat data…</div>
         ) : rows.length === 0 ? (

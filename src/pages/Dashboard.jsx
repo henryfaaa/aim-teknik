@@ -191,31 +191,39 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4 md:px-8 md:py-6 space-y-6">
-      {/* Header */}
-        <div className="flex items-start sm:items-center justify-between flex-wrap gap-3">
-  <h2 className="text-lg sm:text-xl md:text-2xl font-bold tracking-tight">
-    Dashboard
-  </h2>
+     <div className="space-y-3">
 
-  <div className="flex items-center gap-2 flex-wrap">
-    <span className="text-xs sm:text-sm text-gray-600">Periode:</span>
+  {/* ALERT (pisahin biar jadi fokus) */}
+  {stat.ba.withoutBA > 0 && (
+    <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl text-sm text-amber-700">
+      ⚠️ {stat.ba.withoutBA} pekerjaan belum ada BA
+    </div>
+  )}
 
-    <select
-      value={range}
-      onChange={(e)=>setRange(e.target.value)}
-      className="border rounded-md px-2 py-1 text-sm">
-      <option value="30d">30 hari</option>
-      <option value="90d">90 hari</option>
-      <option value="ytd">Year to date</option>
-      <option value="all">Semua</option>
-    </select>
+  {/* HEADER */}
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+    
+    <h2 className="text-xl font-bold">Dashboard</h2>
 
-    {!loading && (
-      <div className="text-xs sm:text-sm text-gray-500">
-        Total: <b>{rows.length}</b>
+    <div className="flex items-center gap-2">
+      <select
+        value={range}
+        onChange={(e)=>setRange(e.target.value)}
+        className="border rounded-lg px-3 py-2 text-sm"
+      >
+        <option value="30d">30 hari</option>
+        <option value="90d">90 hari</option>
+        <option value="ytd">Year to date</option>
+        <option value="all">Semua</option>
+      </select>
+
+      <div className="text-xs text-gray-500">
+        {rows.length} data
       </div>
-    )}
+    </div>
+
   </div>
+
 </div>
 
       {/* 3 main cards */}
@@ -265,39 +273,46 @@ export default function Dashboard() {
             {recent.length === 0 ? (
               <div className="text-sm text-gray-500">Belum ada aktivitas.</div>
             ) : (
-              <div className="overflow-x-auto">
-<table className="min-w-[520px] w-full text-sm">
-                <thead className="text-gray-600">
-                  <tr>
-                    <th className="text-left px-3 py-2">Tanggal</th>
-                    <th className="text-left px-3 py-2">Nama Toko</th>
-                    <th className="text-left px-3 py-2">Nomor Complain</th>
-                    <th className="text-left px-3 py-2">Nomor BA Opname</th>
-                    <th className="text-right px-3 py-2">Total</th>
-                    <th className="text-left px-3 py-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {recent.map((r) => (
-                    <tr key={r.id} className="hover:bg-gray-50">
-                      <td className="px-3 py-2">{r.tanggal?.split("-").reverse().join("/")}</td>
-                      <td className="px-3 py-2">{r.nama_toko}</td>
-                      <td className="px-3 py-2">{r.no_co}</td>
-                      <td className="px-3 py-2">{r.ba_opname_no || "-"}</td>
-                      <td className="px-3 py-2 text-right">Rp {toIDR(r.total_harga)}</td>
-                      <td className="px-3 py-2">
-                        {statusCairEff(r) === "cair" ? (
-                          <Badge tone="green">Sudah Dibayar</Badge>
-                        ) : statusCairEff(r) === "proses" ? (
-                          <Badge tone="blue">Proses</Badge>
-                        ) : (
-                          <Badge>Belum</Badge>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="space-y-3">
+  {recent.map((r) => {
+    const status = statusCairEff(r);
+
+    return (
+      <div key={r.id} className="bg-white border rounded-xl p-4 shadow-sm">
+        
+        {/* HEADER */}
+        <div className="flex justify-between items-start">
+          <div>
+            <div className="font-semibold text-sm">{r.nama_toko}</div>
+            <div className="text-xs text-gray-500">
+              {r.tanggal?.split("-").reverse().join("/")}
+            </div>
+          </div>
+
+          <div className="text-sm font-semibold">
+            Rp {toIDR(r.total_harga)}
+          </div>
+        </div>
+
+        {/* INFO */}
+        <div className="mt-2 text-xs text-gray-600 space-y-1">
+          <div>CO: {r.no_co}</div>
+          <div>BA: {r.ba_opname_no || "-"}</div>
+        </div>
+
+        {/* STATUS */}
+        <div className="mt-3">
+          {status === "cair" ? (
+            <Badge tone="green">Sudah Dibayar</Badge>
+          ) : status === "proses" ? (
+            <Badge tone="blue">Proses</Badge>
+          ) : (
+            <Badge tone="yellow">Belum</Badge>
+          )}
+        </div>
+      </div>
+    );
+  })}
             </div>
             )}
           </div>

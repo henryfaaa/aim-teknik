@@ -345,16 +345,119 @@ export default function BAOpname() {
           </select>
         </div>
       </div>
+{/* ================= MOBILE VERSION ================= */}
+<div className="block md:hidden space-y-3">
 
+  {loading ? (
+    <div className="text-gray-500">Memuat data…</div>
+  ) : err ? (
+    <div className="text-red-600">Error: {err}</div>
+  ) : rows.length === 0 ? (
+    <div className="text-gray-500">Tidak ada data.</div>
+  ) : (
+    rows.map((r) => {
+      const canSelect = Number(r.in_gmail) === 1;
+
+      return (
+        <div key={r.id} className="bg-white border rounded-xl p-4 shadow-sm">
+
+          {/* HEADER */}
+          <div className="flex justify-between">
+            <div>
+              <div className="font-semibold text-sm">{r.nama_toko}</div>
+              <div className="text-xs text-gray-500">{fmtDate(r.tanggal)}</div>
+            </div>
+            <div className="font-bold text-sm">
+              Rp {toIDR(r.total)}
+            </div>
+          </div>
+
+          {/* INFO */}
+          <div className="mt-2 text-xs text-gray-600 space-y-1">
+            <div>CO: {r.co_no}</div>
+            <div>BA: {r.ba_no || "-"}</div>
+            <div>KDTK: {r.kdtk}</div>
+          </div>
+
+          {/* STATUS */}
+          <div className="mt-3 flex gap-2 flex-wrap">
+
+            {canSelect ? (
+              <span className="px-2 py-1 text-xs rounded-full bg-emerald-100 text-emerald-700">
+                BA Ada
+              </span>
+            ) : (
+              <span className="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-600">
+                Belum Ada BA
+              </span>
+            )}
+
+            {r.printed ? (
+              <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                Sudah Cetak
+              </span>
+            ) : (
+              <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">
+                Belum Cetak
+              </span>
+            )}
+          </div>
+
+          {/* ACTION */}
+          <div className="mt-3 flex gap-2">
+
+            <button
+              disabled={!canSelect}
+              onClick={async () => {
+                setSelected(new Set([r.ba_no]));
+                await doPreview();
+              }}
+              className={`flex-1 text-xs py-2 rounded ${
+                canSelect
+                  ? "bg-blue-50 text-blue-600"
+                  : "bg-gray-100 text-gray-400"
+              }`}
+            >
+              Preview
+            </button>
+
+            <button
+              disabled={!canSelect}
+              onClick={async () => {
+                setSelected(new Set([r.ba_no]));
+                await doExport();
+              }}
+              className={`flex-1 text-xs py-2 rounded ${
+                canSelect
+                  ? "bg-emerald-50 text-emerald-600"
+                  : "bg-gray-100 text-gray-400"
+              }`}
+            >
+              Export
+            </button>
+
+          </div>
+
+        </div>
+      );
+    })
+  )}
+
+</div>
       {/* Ringkasan */}
       <div className="bg-white rounded-xl shadow p-4 flex flex-wrap gap-6 text-sm">
         <div><b>Total BA:</b> {totalBAAll}</div>
         <div><b>Total Nilai:</b> Rp {toIDR(totalNilaiAll)}</div>
         <div><b>Dipilih:</b> {selected.size}</div>
       </div>
-
+{/* 🚨 ALERT (TARUH DI SINI) */}
+{rows.filter(r => Number(r.in_gmail) === 0).length > 0 && (
+  <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl text-sm text-amber-700">
+    ⚠️ Ada BA yang belum tersedia di Gmail
+  </div>
+)}
       {/* Tabel */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
+      <div className="hidden md:block bg-white rounded-xl shadow overflow-hidden">
         {loading ? (
           <div className="p-6 text-gray-500">Memuat data…</div>
         ) : err ? (

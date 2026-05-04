@@ -286,9 +286,78 @@ export default function Pencairan() {
           <b>Jumlah BA Opname:</b> {sumBA}
         </div>
       </div>
+      {sumProses > 0 && (
+  <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl text-sm text-blue-700">
+    ⏳ {sumProses} TTF masih dalam proses pembayaran
+  </div>
+)}
+{/* ================= MOBILE VERSION ================= */}
+<div className="block md:hidden space-y-3">
 
+  {loading ? (
+    <div className="text-gray-500">Memuat data…</div>
+  ) : err ? (
+    <div className="text-red-600">Error: {err}</div>
+  ) : viewRows.length === 0 ? (
+    <div className="text-gray-500">Tidak ada data.</div>
+  ) : (
+    viewRows.map((r) => (
+      <div key={r.id} className="bg-white border rounded-xl p-4 shadow-sm">
+
+        {/* HEADER */}
+        <div className="flex justify-between">
+          <div>
+            <div className="font-semibold text-sm">{r.filename}</div>
+            <div className="text-xs text-gray-500">
+              {fmtDateTime(r.uploaded_at)}
+            </div>
+          </div>
+          <div className="text-sm font-bold">
+            {r.jumlah_ba || 0} BA
+          </div>
+        </div>
+
+        {/* STATUS */}
+        <div className="mt-2">
+          {r.status === "sudah_cair" ? (
+            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+              Sudah Dibayar
+            </span>
+          ) : (
+            <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
+              Proses Pembayaran
+            </span>
+          )}
+        </div>
+
+        {/* ACTION */}
+        <div className="mt-3 flex gap-2">
+
+          <button
+            onClick={() => openDetail(r)}
+            className="flex-1 text-xs py-2 bg-gray-100 rounded"
+          >
+            Lihat BA
+          </button>
+
+          {r.status !== "sudah_cair" && (
+            <button
+              onClick={() => markCair(r)}
+              className="flex-1 text-xs py-2 bg-emerald-600 text-white rounded"
+            >
+              Tandai Cair
+            </button>
+          )}
+
+        </div>
+
+      </div>
+    ))
+  )}
+
+</div>
       {/* Tabel TTF */}
-      <div className="bg-white rounded-xl shadow overflow-hidden">
+      <div className="hidden md:block bg-white rounded-xl shadow overflow-hidden">
         {loading ? (
           <div className="p-6 text-gray-500">Memuat data…</div>
         ) : err ? (

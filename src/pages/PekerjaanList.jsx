@@ -186,9 +186,76 @@ const bulkExportWA = async () => {
           <input type="date" value={to} onChange={(e) => { setPage(1); setTo(e.target.value); }} className="w-full border rounded px-3 py-2" />
         </div>
       </div>
+{/* ================= MOBILE VERSION ================= */}
+<div className="block md:hidden space-y-3">
 
+  {loading ? (
+    <div className="text-gray-500">Memuat data…</div>
+  ) : error ? (
+    <div className="text-red-600">Gagal memuat: {error}</div>
+  ) : rows.length === 0 ? (
+    <div className="text-gray-500">Tidak ada data.</div>
+  ) : (
+    rows.map((r) => (
+      <div key={r.id} className="bg-white border rounded-xl p-4 shadow-sm active:scale-[0.98] transition">
+
+        {/* HEADER */}
+        <div className="flex justify-between items-start">
+          <div>
+            <div className="font-semibold text-sm">{r.nama_toko}</div>
+            <div className="text-xs text-gray-500">{fmtDate(r.tanggal)}</div>
+          </div>
+
+          <div className="text-sm font-bold">
+            Rp {toIDR(r.total_harga)}
+          </div>
+        </div>
+
+        {/* INFO */}
+        <div className="mt-2 text-xs text-gray-600 space-y-1">
+          <div>KDTK: {r.kode_toko}</div>
+          <div>CO: {r.no_co || "-"}</div>
+          <div className="truncate">{r.deskripsi_ringkas || "—"}</div>
+        </div>
+
+        {/* STATUS */}
+        <div className="mt-3 flex items-center justify-between">
+          <StatusBadge value={r.status} />
+
+          {r.foto_count > 0 && (
+            <button
+              onClick={() => openPhotos(r.id)}
+              className="text-blue-600 text-xs flex items-center gap-1"
+            >
+              📎 {r.foto_count}
+            </button>
+          )}
+        </div>
+
+        {/* ACTION */}
+        <div className="mt-3 flex gap-2">
+          <Link
+            to={`/Pekerjaan/${r.id}/edit`}
+            className="flex-1 text-center text-xs bg-blue-50 text-blue-600 py-2 rounded"
+          >
+            Edit
+          </Link>
+
+          <button
+            onClick={() => removeOne(r.id)}
+            className="flex-1 text-center text-xs bg-red-50 text-red-600 py-2 rounded"
+          >
+            Hapus
+          </button>
+        </div>
+
+      </div>
+    ))
+  )}
+
+</div>
       {/* table */}
-      <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           {loading ? (
             <div className="p-6 text-gray-500">Memuat data…</div>
