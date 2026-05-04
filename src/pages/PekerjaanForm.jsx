@@ -94,14 +94,14 @@ export default function InputPekerjaan() {
 
   const msg =
     err?.response?.data?.message ||
-    "Nomor Complain sudah digunakan. Silakan input nomor CO baru.";
+    err?.response?.data?.error ||   // 🔥 TAMBAH INI
+    "Terjadi error";
 
   alert("⚠️ " + msg);
 
-    } finally {
-      setLoading(false);
-    }
-  };
+} finally {
+  setLoading(false);
+}
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
