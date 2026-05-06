@@ -166,7 +166,7 @@
         harga: Number(x.harga || 0),
         urut: i + 1,
       }));
-console.log("CO FINAL:", co);
+
       // hitung total harga = Σ (qty * harga)
       const total_harga = parsedItems.reduce(
         (a, b) => a + Number(b.qty || 0) * Number(b.harga || 0),
