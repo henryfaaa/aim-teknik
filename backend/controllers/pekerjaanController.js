@@ -156,7 +156,9 @@
     const conn = await pool.getConnection();
     try {
       const { tanggal, no_co, kode_toko, nama_toko, items } = req.body;
-      const co = String(no_co || "").trim();
+      const co = String(no_co || "")
+  .trim()
+  .toUpperCase();
       const parsedItems = JSON.parse(items || "[]").map((x, i) => ({
         deskripsi: String(x.deskripsi || "").trim(),
         satuan: String(x.satuan || "").trim(),
@@ -164,7 +166,7 @@
         harga: Number(x.harga || 0),
         urut: i + 1,
       }));
-
+console.log("CO FINAL:", co);
       // hitung total harga = Σ (qty * harga)
       const total_harga = parsedItems.reduce(
         (a, b) => a + Number(b.qty || 0) * Number(b.harga || 0),
@@ -263,7 +265,9 @@
     try {
       const { tanggal, no_co, kode_toko, nama_toko, status, items } = req.body;
 
-  const co = String(no_co || "").trim();
+  const co = String(no_co || "")
+  .trim()
+  .toUpperCase();
 
   const parsedItems = items ? JSON.parse(items) : null;
 
