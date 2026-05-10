@@ -102,7 +102,7 @@ export default function InputPekerjaan() {
 } finally {
   setLoading(false);
 } 
-
+};
   return (
     <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
       <div className="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 md:p-8">
